@@ -1,0 +1,65 @@
+﻿@model AgeApp.Models.View.AgeViewModel
+@{
+    ViewBag.Title = "Home Page";
+    string axisLabels = string.Join(",", Enumerable.Range(Model.MinimumAge, Model.AgeFrequencies.Length));
+    string axisValues = Model.AgeFrequencies.Length > 0 ? string.Join(",", Model.AgeFrequencies) : "";
+    string colorValues = "";
+    for (int i = 0; i < Model.AgeFrequencies.Length; i++)
+    {
+        if(i + Model.MinimumAge == Model.UserProfile.Age)
+        {
+            colorValues += "'rgba(255, 0, 0, 0.4)',";
+        }
+        else
+        {
+            colorValues += "'rgba(230, 230, 230, 0.4)',";
+        }
+    }
+}
+@section scripts{
+    <script src="~/Scripts/Chart.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var chartCanvas = $('#ageHistogram')
+            var ageHist = new Chart(chartCanvas, {
+                type: 'bar',
+                data: {
+                    labels: [@axisLabels],
+                    datasets: [{
+                        label: "Age",
+                        data: [@axisValues],
+                        backgroundColor: [@Html.Raw(colorValues)]
+                    }]
+                },
+                options: {
+                    scales: {
+                        xAxes: [{
+                            barPercentage: 1.0
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize: 1
+                            }
+                        }]
+                    },
+                    tooltips: {
+                        enabled: false
+                    }
+                }
+            });
+        });
+    </script>
+}
+
+<div class="jumbotron">
+    <h1>Age App</h1>
+    <p class="lead">This is a pre-interview assesment for M*Modal.</p>
+    <p><a href="https://mmodal.com" class="btn btn-primary btn-lg">This is their website &raquo;</a></p>
+</div>
+
+<div class="row">
+    <div class="col-md-offset-2 col-md-8">
+        <canvas id="ageHistogram" width="600" height="400"></canvas>
+    </div>
+</div>
